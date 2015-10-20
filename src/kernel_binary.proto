@@ -1,0 +1,5 @@
+syntax = "proto3";
+message kernel_binary
+{
+    int num_kernels = 1;
+}
