@@ -51,7 +51,7 @@ add_definitions(-D EXINTERFACE)
 # Having problems on build server, compiling gtest headers with -pedantic; disabling detection of long long
 # http://code.google.com/p/googletest/issues/detail?id=334
 if( CMAKE_COMPILER_IS_GNUCXX )
-	add_definitions( -Wno-long-long )
+    add_definitions( -Wno-long-long )
 endif( )
 
 
@@ -70,12 +70,12 @@ find_package( Protobuf REQUIRED)
 
 include_directories(
     ${OPENCL_INCLUDE_DIRS}
-	${PROTOBUF_INCLUDE_DIRS}
+    ${PROTOBUF_INCLUDE_DIRS}
     .)
 
 add_executable(PROTOBUF_SGEMM ${PROTOBUF_SGEMM_SRC})
 target_link_libraries(PROTOBUF_SGEMM 
                       ${OPENCL_LIBRARIES}
-					  ${PROTOBUF_LIBRARIES})
+                      ${PROTOBUF_LIBRARIES})
 message(STATUS "OpenCL libararies: ${OPENCL_LIBRARIES}")
 
