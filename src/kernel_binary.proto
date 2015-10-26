@@ -1,5 +1,23 @@
 syntax = "proto3";
-message kernel_binary
+
+
+message KERNEL_BINARY
 {
-    int num_kernels = 1;
+    //int32 num_kernels = 1;
+    string asic_name = 2;
+    message HAWAII
+    {
+        string driver_name = 4;
+        string cl_build_options = 6;
+        int32 num_kernels = 8;
+        repeated string kernel_binary = 9;
+    }
+    repeated HAWAII hawaii = 3;
+    message FIJI
+    {
+        string driver_name = 5;
+        string cl_build_options = 7;
+    }
+    repeated FIJI fiji = 6;
+    
 }

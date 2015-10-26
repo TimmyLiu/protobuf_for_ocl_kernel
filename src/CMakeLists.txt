@@ -42,6 +42,7 @@ else()
     set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
 endif()
 
+
 set(PROTOBUF_SGEMM_SRC protobuf_sgemm.cpp)
 
 
@@ -62,18 +63,30 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
 #define OPENCL_FOUND
 find_package( OpenCL )
 find_package( Protobuf REQUIRED)
+set(PROTOBUF_GEN ${CMAKE_CURRENT_BINARY_DIR}/PROTOBUF_GEN)
+set(PROTOBUF_SRC kernel_binary.proto)
+
+PROTOBUF_GENERATE_CPP(PROTO_SRC PROTO_HEADER ${PROTOBUF_SRC})
 
 
 
+set( PROTOBUF_SGEMM_HEADER ${PROTO_HEADER})
 
-
+set( OPENCL_HELPER_HEADER ${CMAKE_SOURCE_DIR}/utilities/OpenCLHelper/include/opencl_helper.h)
+set( OPENCL_HELPER_SRC ${CMAKE_SOURCE_DIR}/utilities/OpenCLHelper/src/opencl_helper.c)
 
 include_directories(
     ${OPENCL_INCLUDE_DIRS}
     ${PROTOBUF_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/utilities/OpenCLHelper/include
     .)
 
-add_executable(PROTOBUF_SGEMM ${PROTOBUF_SGEMM_SRC})
+add_executable(PROTOBUF_SGEMM ${PROTOBUF_SGEMM_SRC}
+                              ${PROTO_SRC}
+                              ${PROTOBUF_SGEMM_HEADER}
+                              ${OPENCL_HELPER_HEADER}
+                              ${OPENCL_HELPER_SRC})
 target_link_libraries(PROTOBUF_SGEMM 
                       ${OPENCL_LIBRARIES}
                       ${PROTOBUF_LIBRARIES})
