@@ -10,7 +10,8 @@ message KERNEL_BINARY
         string driver_name = 4;
         string cl_build_options = 6;
         int32 num_kernels = 8;
-        repeated string kernel_binary = 9;
+        repeated bytes kernel_byte = 9;
+        int32 sizeof_kernel_byte = 10;
     }
     repeated HAWAII hawaii = 3;
     message FIJI

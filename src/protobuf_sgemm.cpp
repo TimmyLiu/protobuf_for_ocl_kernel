@@ -49,11 +49,9 @@ int main(int argc, char *argv[])
 
         platform = getPlatformname(platformName, 64);
         std::cout << "platform name is " << platformName << std::endl;
-        // need to write platform name to a file
 
         device = getDevice(platform, device_name, 64);
         std::cout << "device name is " << device_name << std::endl;
-        // need to write device name to a file
 
         std::string current_device;
         thisKernelBinary.set_asic_name(device_name);
@@ -64,7 +62,6 @@ int main(int argc, char *argv[])
         {
             hawaiiKernelBinary = new KERNEL_BINARY_HAWAII();
             {
-                // Read the existing address book.
                 std::string hawaii_kb = kb_path + "\\hawaii.kb";
                 std::fstream input_hawaii_kb(hawaii_kb, std::ios::in | std::ios::binary);
                 if (!input_hawaii_kb) {
@@ -85,7 +82,7 @@ int main(int argc, char *argv[])
         std::cout << "CL version number is " << cl_version_name << std::endl;
         hawaiiKernelBinary->set_driver_name(cl_version_name);
         hawaiiKernelBinary->set_cl_build_options(BUILD_OPTIONS);
-        // need to write this version number to a file
+
         props[1] = (cl_context_properties)platform;
         context = clCreateContext(props, 1, &device, NULL, NULL, &err);
         assert(context != NULL);
@@ -94,13 +91,12 @@ int main(int argc, char *argv[])
         source = loadFile(KERNEL_SOURCE);
         assert(source != NULL);
         err = getKernelBinaryFromSource(context, source, hawaiiKernelBinary->cl_build_options().c_str(), kernelBinary, &kernelBinarySize);
-        std::cout << "kernel binary looks like " << kernelBinary[0] <<std::endl;
+   
         hawaiiKernelBinary->set_num_kernels(hawaiiKernelBinary->num_kernels()+ 1);
-        hawaiiKernelBinary->add_kernel_binary(kernelBinary[0]);
-        
+        hawaiiKernelBinary->set_sizeof_kernel_byte(kernelBinarySize);
+        hawaiiKernelBinary->add_kernel_byte(*kernelBinary, kernelBinarySize);
 
         {
-            // Write the kernel back to disk.
             std::string system_info = kb_path + "\\system_info.kb";
             std::fstream output_system_info(system_info, std::ios::out | std::ios::trunc | std::ios::binary);
             if (!thisKernelBinary.SerializeToOstream(&output_system_info)) {
@@ -135,7 +131,6 @@ int main(int argc, char *argv[])
         {
             hawaiiKernelBinary = new KERNEL_BINARY_HAWAII();
             {
-                // Read the existing address book.
                 std::string hawaii_kb = kb_path + "\\hawaii.kb";
                 std::fstream input_hawaii_kb(hawaii_kb, std::ios::in | std::ios::binary);
                 if (!hawaiiKernelBinary->ParseFromIstream(&input_hawaii_kb)) {
@@ -157,8 +152,11 @@ int main(int argc, char *argv[])
 
         int num_kernels = hawaiiKernelBinary->num_kernels();
         std::cout << "there were " << num_kernels << " kernel(s) compiled" <<std::endl;
-        std::string loaded_kernel_binary = hawaiiKernelBinary->kernel_binary(0);
-        std::cout << "kernel binary looks like " << loaded_kernel_binary << std::endl;
+
+        int size_kernel = hawaiiKernelBinary->sizeof_kernel_byte();
+        std::cout << "size_kernel = " << size_kernel << " byte" << std::endl;
+        std::string kernel_binary = hawaiiKernelBinary->kernel_byte(0);
+
 
     }
 
